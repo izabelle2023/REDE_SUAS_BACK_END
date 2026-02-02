@@ -1,20 +1,34 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
-use Illuminate\Foundation\Application;
-use Illuminate\Http\Request;
+// SUAS 3 APIs DO GITHUB
+$uri = $_SERVER['REQUEST_URI'];
 
-define('LARAVEL_START', microtime(true));
-
-// Determine if the application is in maintenance mode...
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
-    require $maintenance;
+if ($uri == '/listagem-usuarios') {
+    echo json_encode([
+        'status' => 'sucesso',
+        'usuarios' => [
+            ['email' => 'izabelle@teste.com', 'senha' => 'abc123', 'dt_nascimento' => '1995-05-10'],
+            ['email' => 'teste@teste.com', 'senha' => '123456', 'dt_nascimento' => '2000-01-01']
+        ]
+    ]);
+    
+} elseif ($_POST['email'] && $uri == '/acessar') {
+    echo json_encode([
+        'status' => 'sucesso',
+        'email' => $_POST['email']
+    ]);
+    
+} elseif ($_POST['email'] && $uri == '/registrar') {
+    echo json_encode([
+        'status' => 'sucesso',
+        'mensagem' => 'Usuário registrado com sucesso'
+    ]);
+    
+} else {
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Rota não encontrada']);
 }
-
-// Register the Composer autoloader...
-require __DIR__.'/../vendor/autoload.php';
-
-// Bootstrap Laravel and handle the request...
-/** @var Application $app */
-$app = require_once __DIR__.'/../bootstrap/app.php';
-
-$app->handleRequest(Request::capture());
+?>
